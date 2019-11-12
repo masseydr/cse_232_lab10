@@ -1,0 +1,86 @@
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+#include <fstream>
+using std::ifstream;
+#include <string>
+using std::string;
+#include <vector>
+using std:: vector;
+#include <iomanip>
+using std::setprecision;
+#include <numeric>
+#include <functional>
+using std::plus;
+#include <algorithm>
+using std::sort;
+
+
+
+int main(){
+    ifstream input("common_passwords.txt");
+    
+    
+    vector<string> password_list;
+  
+    string input_pass;
+    while (!input.eof()) {
+        if (input >> input_pass){
+            //cout << input_pass << endl; // Test
+            password_list.push_back(input_pass);
+        }else{
+            input.clear();
+            input.ignore();
+        }
+    }
+    
+    
+    string user_input;
+    cout <<  "Give me a password: ";
+    cin >> user_input;
+    cout << "You provided a password of " << user_input << endl;
+    vector<string> final_vec;
+    int final_diff = 10;
+    for(int i=0; i < static_cast<int>(password_list.size()); i++){
+        int diff;
+        string com_pass = password_list[i];
+        //cout << com_pass << endl; // Test
+        string long_pass = (static_cast<int>(com_pass.size()) <= static_cast<int>(user_input.size())) ? user_input : com_pass;
+        string short_pass = (static_cast<int>(com_pass.size()) > static_cast<int>(user_input.size())) ? user_input : com_pass;
+        int short_size = static_cast<int>(short_pass.size());
+        int long_size = static_cast<int>(long_pass.size());
+        diff = long_size - short_size;
+        for (int x = 0; x < static_cast<int>(short_pass.size()); x++){
+            if (short_pass[x] != long_pass[x]){   // made changes here from .at()
+                diff += 1;
+            }else{
+                continue;
+            }
+        }
+        if (diff < final_diff){
+            final_diff = diff;
+            final_vec.clear();
+            final_vec.push_back(com_pass);
+        }else if(diff == final_diff){
+            final_vec.push_back(com_pass);
+        }else{
+            continue;
+        }
+        if (i >= static_cast<int>(password_list.size())){
+            break;
+            
+        }
+    }
+    sort(final_vec.begin(),final_vec.end());
+    if (static_cast<int>(final_vec.size() == 0)){
+        final_diff = 0;
+    }
+        
+    cout << "The most similar passwords to " << user_input<<  " are:" << endl;
+    for (vector<string>::iterator point = final_vec.begin();point != final_vec.end(); ++point){
+      cout << *point << ", ";
+    }
+    cout << endl;
+    cout << "All of which are " << final_diff <<" character(s) different." << endl;
+}
