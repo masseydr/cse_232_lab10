@@ -17,13 +17,26 @@ using std::plus;
 using std::sort;
 
 
+//Test to see if the differences are greater than less than or equal to
+int diff_func(int final_diff, int diff, vector<string> &final_vec, string com_pass){
+        if (diff < final_diff){
+            final_diff = diff;
+            final_vec.clear();
+            final_vec.push_back(com_pass);
+        }else if(diff == final_diff){
+            final_vec.push_back(com_pass);
+        }else{
+            continue;
+        }
+	return final_diff;
 
-int main(){
-    ifstream input("common_passwords.txt");
-    
-    
-    vector<string> password_list;
-//Takes in file and reads into vector  
+}
+
+
+//Takes in file and reads into vector 
+vector<string> file_reader (string input_file){
+    ifstream input(input_file);    
+    vector<string> password_list; 
     string input_pass;
     while (!input.eof()) {
         if (input >> input_pass){
@@ -33,6 +46,12 @@ int main(){
             input.ignore();
         }
     }
+    return password_list;
+}
+
+int main(){
+    string input_file = "common_passwords.txt"; 
+    password_list = file_reader(input_file);
     
 //Takes in user password    
     string user_input;
@@ -40,7 +59,7 @@ int main(){
     cin >> user_input;
     cout << "You provided a password of " << user_input << endl;
     vector<string> final_vec;
-    int final_diff = 10;
+    int final_diff = 20;
 //Iterates through vector and grabs each password
     for(int i=0; i < static_cast<int>(password_list.size()); i++){
         int diff;
@@ -58,16 +77,7 @@ int main(){
                 continue;
             }
         }
-//Test to see if the differences are greater than less than or equal to
-        if (diff < final_diff){
-            final_diff = diff;
-            final_vec.clear();
-            final_vec.push_back(com_pass);
-        }else if(diff == final_diff){
-            final_vec.push_back(com_pass);
-        }else{
-            continue;
-        }
+	final_ diff = diff_func(final_diff, diff, &final_vec, com_pass);
         if (i >= static_cast<int>(password_list.size())){
             break;
             
